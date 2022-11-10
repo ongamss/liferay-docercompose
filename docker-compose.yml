@@ -40,6 +40,3 @@ services:
 networks:
   # The presence of these objects is sufficient to define them
   challeger: {}
-
-volumes:
-  data1:
