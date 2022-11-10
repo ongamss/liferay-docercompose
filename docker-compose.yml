@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  liferay:
+    image: liferay/dxp:7.4.13.nightly
+    container_name: liferay7.4
+    environment:
+      - LIFERAY_LOCALES_PERIOD_ENABLED=en_US,pt_BR
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '2.5'
+          memory: '8G'
+      restart_policy:
+        condition: on-failure
+    privileged: true
+    ports:
+      - "8080"
+    networks:
+      - challeger
+
+  ngnis-proxy:
+    image: nginx
+    container_name: my-web-container
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certificado30284.crt:/etc/nginx/cert/cert.crt
+      - ./privadakey30284.key:/etc/nginx/cert/private.key
+      - ./certificadopem30284.pem:/etc/nginx/cert/cert.pem
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - challeger
+    links:
+      - liferay
+
+
+networks:
+  # The presence of these objects is sufficient to define them
+  challeger: {}
+
+volumes:
+  data1:
